@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canuckle – Daily Canadian Word Game (5 Letters, 6 Tries)</title>
+<meta name="description" content="Play Canuckle, the free daily Canadian word game: guess the 5-letter word in six tries. Every answer has a Canadian connection – wildlife, food, hockey, places and slang – with hints, practice mode and fun facts.">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Canuckle – Daily Canadian Word Game">
+<meta property="og:description" content="Six tries, five letters, one Canadian word a day. Hints, practice mode and a fun fact after every round.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@graph":[
+    {
+      "@type":"VideoGame",
+      "name":"Canuckle – Canadian Word Game",
+      "genre":"Word puzzle",
+      "gamePlatform":"Web browser",
+      "inLanguage":"en",
+      "description":"A free daily word puzzle where every 5-letter answer has a Canadian connection.",
+      "offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"}
+    },
+    {
+      "@type":"FAQPage",
+      "mainEntity":[
+        {"@type":"Question","name":"How do I play Canuckle?","acceptedAnswer":{"@type":"Answer","text":"Type a five-letter word and press Enter. Each tile changes colour to show whether the letter is in the right spot, in the word but in another spot, or not in the word at all. You have six tries to find the Canadian word."}},
+        {"@type":"Question","name":"When does a new word appear?","acceptedAnswer":{"@type":"Answer","text":"A new daily word appears every day at midnight in your local time zone. You can play as many extra rounds as you like in practice mode."}},
+        {"@type":"Question","name":"What counts as a Canadian word?","acceptedAnswer":{"@type":"Answer","text":"Every answer is linked to Canada in some way – wildlife, food, places, hockey and curling, Indigenous culture, history or Canadian slang. French-Canadian words are written without accents."}},
+        {"@type":"Question","name":"How do hints work?","acceptedAnswer":{"@type":"Answer","text":"Tap the hint button to reveal up to three clues one at a time: the topic of the word, how many vowels it contains, and its first letter."}},
+        {"@type":"Question","name":"Is my progress saved?","acceptedAnswer":{"@type":"Answer","text":"Your daily progress and statistics are stored in your own browser only. Clearing your browser data resets them."}},
+        {"@type":"Question","name":"Is Canuckle the same as Wordle?","acceptedAnswer":{"@type":"Answer","text":"The rules are similar to Wordle, but every Canuckle answer has a Canadian theme and each round ends with a short fun fact about the word."}}
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a href="#" class="brand" aria-label="Canuckle home">
+      <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><path d="M16 2l2.6 6.4 5-2.6-1.4 6.8 5.8-1.2-2 4.6 3.6 1.4-8 6.2.8 3.2-6.4-1.2V30h-1.6v-4.6l-6.4 1.2.8-3.2-8-6.2 3.6-1.4-2-4.6 5.8 1.2-1.4-6.8 5 2.6z" fill="#ef4444"/></svg>
+      <span>Canu<b>ckle</b></span>
+    </a>
+    <button class="burger" aria-label="Menu" onclick="document.querySelector('.nav').classList.toggle('open')"><span></span><span></span></button>
+    <nav class="nav">
+      <a href="#" class="cur">Play</a>
+      <a href="#how">How to Play</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="stage">
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="wrap stage-in">
+    <div class="intro">
+      <p class="eyebrow">Daily Canadian word puzzle</p>
+      <h1>Canuckle: guess the Canadian word in six tries</h1>
+      <p class="intro-p">Moose, maple, toque or hoser? One five-letter word with a Canadian twist every day, plus unlimited practice rounds. For the past-puzzle calendar, daily hints and more word games, play <a href="https://canukle.com/">Canuckle</a> on the main site.</p>
+    </div>
+
+    <!-- ===== GAME ===== -->
+    <div class="game" id="game">
+      <div class="bar">
+        <div class="mode" role="group" aria-label="Game mode">
+          <button type="button" data-m="daily" class="on">Daily <span id="pz-no"></span></button>
+          <button type="button" data-m="practice">Practice</button>
+        </div>
+        <div class="tools">
+          <button type="button" class="ic" id="b-hint" title="Hint" aria-label="Hint"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <button type="button" class="ic" id="b-stats" title="Statistics" aria-label="Statistics"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <button type="button" class="ic" id="b-hc" title="High contrast" aria-label="Toggle high contrast colours"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+        </div>
+      </div>
+      <div class="hints" id="hints" aria-live="polite"></div>
+      <div class="board" id="board" aria-label="Game board"></div>
+      <div class="kb" id="kb" aria-label="Keyboard"></div>
+      <p class="rule-note">Any five letters with at least one vowel are accepted as a guess.</p>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <!-- HOW TO PLAY -->
+  <section class="sec" id="how">
+    <p class="eyebrow dark">How to play</p>
+    <h2>Five letters, six guesses, one Canadian word</h2>
+    <div class="how">
+      <div class="how-steps">
+        <p>Type any five-letter guess and press <b>Enter</b>. After each guess the tiles change colour to show how close you are:</p>
+        <div class="ex">
+          <div class="ex-row"><span class="t c">M</span><span class="t">A</span><span class="t">P</span><span class="t">L</span><span class="t">E</span></div>
+          <p><b>M</b> is in the word and in the right spot.</p>
+        </div>
+        <div class="ex">
+          <div class="ex-row"><span class="t">S</span><span class="t">K</span><span class="t p">A</span><span class="t">T</span><span class="t">E</span></div>
+          <p><b>A</b> is in the word but in a different spot.</p>
+        </div>
+        <div class="ex">
+          <div class="ex-row"><span class="t">B</span><span class="t">I</span><span class="t">S</span><span class="t a">O</span><span class="t">N</span></div>
+          <p><b>O</b> is not in the word at all.</p>
+        </div>
+      </div>
+      <div class="how-side">
+        <h3>Good to know</h3>
+        <ul>
+          <li>A new daily word appears at midnight in your local time.</li>
+          <li>Practice mode gives you a fresh word whenever you want.</li>
+          <li>Stuck? The hint button reveals the topic, the number of vowels and the first letter.</li>
+          <li>The high-contrast button switches to orange and blue tiles.</li>
+          <li>Your streak and stats stay in your own browser.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOPICS -->
+  <section class="sec">
+    <p class="eyebrow dark">What to expect</p>
+    <h2>Seven Canadian topics behind the answers</h2>
+    <div class="topics">
+      <div><span>🦫</span><b>Wildlife</b><p>Moose, bison, otters and the birds on our coins.</p></div>
+      <div><span>🍁</span><b>Food</b><p>Syrup, curds, gravy and a famous butter treat.</p></div>
+      <div><span>🏒</span><b>Sports</b><p>Hockey and curling words straight from the rink.</p></div>
+      <div><span>🏔️</span><b>Places</b><p>Parks, territories and famous waterfalls.</p></div>
+      <div><span>🛶</span><b>Culture</b><p>Inuit, First Nations and Métis words that shaped the country.</p></div>
+      <div><span>📜</span><b>History</b><p>Railways, the Crown and the people who built Canada.</p></div>
+      <div><span>💬</span><b>Slang</b><p>The words you only hear north of the 49th parallel.</p></div>
+    </div>
+  </section>
+
+  <!-- TIPS -->
+  <section class="sec split">
+    <div>
+      <p class="eyebrow dark">Strategy</p>
+      <h2>Tips to solve it in fewer guesses</h2>
+      <ol class="tips">
+        <li><b>Open with vowels.</b> Words like CANOE (four vowels) or AUDIO quickly show which vowels you can rule out.</li>
+        <li><b>Think Canadian.</b> Once you know two or three letters, run through the topics – is it an animal, a food or a hockey term?</li>
+        <li><b>Don’t forget repeats.</b> Answers like MOOSE and GOOSE use the same letter twice.</li>
+        <li><b>Use grey letters.</b> The keyboard greys out letters that are not in the word, so you never waste a guess on them.</li>
+        <li><b>Save hints for the end.</b> The first letter is the strongest clue – keep it for guess five.</li>
+      </ol>
+    </div>
+    <div class="starters">
+      <h3>Strong starting words</h3>
+      <div class="chips"><span>CANOE</span><span>SLATE</span><span>RAISE</span><span>TOQUE</span><span>AROSE</span><span>MAPLE</span></div>
+      <p>CANOE is a favourite for this game – it covers four vowels and is itself a Canadian word.</p>
+    </div>
+  </section>
+
+  <!-- SLANG -->
+  <section class="sec">
+    <p class="eyebrow dark">Mini glossary</p>
+    <h2>Canadian slang you may need</h2>
+    <div class="slang">
+      <dl>
+        <div><dt>Toque</dt><dd>A knitted winter hat. Also spelled “tuque”.</dd></div>
+        <div><dt>Hoser</dt><dd>A friendly insult for a clumsy or unsophisticated person.</dd></div>
+        <div><dt>Loonie</dt><dd>The one-dollar coin, named after the loon on its back.</dd></div>
+        <div><dt>Toonie</dt><dd>The two-dollar coin – a mix of “two” and “loonie”.</dd></div>
+        <div><dt>Double-double</dt><dd>A coffee with two creams and two sugars.</dd></div>
+        <div><dt>Keener</dt><dd>Someone who is extremely eager, often at school.</dd></div>
+        <div><dt>Eh</dt><dd>Added to the end of a sentence to invite agreement.</dd></div>
+        <div><dt>Two-four</dt><dd>A case of 24 beers.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec">
+    <p class="eyebrow dark">FAQ</p>
+    <h2>Canuckle questions</h2>
+    <div class="faq">
+      <details open><summary>How do I play Canuckle?</summary><p>Type a five-letter word and press Enter. Each tile changes colour to show whether the letter is in the right spot, in the word but in another spot, or not in the word at all. You have six tries to find the Canadian word.</p></details>
+      <details><summary>When does a new word appear?</summary><p>A new daily word appears every day at midnight in your local time zone. You can play as many extra rounds as you like in practice mode.</p></details>
+      <details><summary>What counts as a Canadian word?</summary><p>Every answer is linked to Canada in some way – wildlife, food, places, hockey and curling, Indigenous culture, history or Canadian slang. French-Canadian words are written without accents.</p></details>
+      <details><summary>How do hints work?</summary><p>Tap the hint button to reveal up to three clues one at a time: the topic of the word, how many vowels it contains, and its first letter.</p></details>
+      <details><summary>Is my progress saved?</summary><p>Your daily progress and statistics are stored in your own browser only. Clearing your browser data resets them.</p></details>
+      <details><summary>Is Canuckle the same as Wordle?</summary><p>The rules are similar to Wordle, but every Canuckle answer has a Canadian theme and each round ends with a short fun fact about the word.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer class="foot" id="contact">
+  <div class="wrap foot-in">
+    <div>
+      <span class="brand light"><span>Canu<b>ckle</b></span></span>
+      <p>Canuckle – the free Canadian word puzzle. One new word every day, eh.</p>
+    </div>
+    <nav>
+      <a href="#game">Play</a>
+      <a href="#how">How to Play</a>
+      <a href="#">Contact</a>
+      <a href="#">Privacy</a>
+    </nav>
+  </div>
+  <p class="wrap foot-copy">© <span id="yr"></span> Canuckle · Daily Canadian word game.</p>
+</footer>
+
+<!-- RESULT / STATS MODAL -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title" hidden>
+  <div class="m-box">
+    <button class="m-x" id="m-x" aria-label="Close">×</button>
+    <div id="m-result">
+      <p class="m-k" id="m-k">Well done!</p>
+      <h2 id="m-title">MOOSE</h2>
+      <p class="m-cat" id="m-cat">Wildlife</p>
+      <p class="m-fact" id="m-fact"></p>
+    </div>
+    <h3 class="m-h">Statistics</h3>
+    <div class="m-stats">
+      <div><b id="st-p">0</b><span>Played</span></div>
+      <div><b id="st-w">0</b><span>Win %</span></div>
+      <div><b id="st-s">0</b><span>Streak</span></div>
+      <div><b id="st-b">0</b><span>Best</span></div>
+    </div>
+    <h3 class="m-h">Guess distribution</h3>
+    <div class="dist" id="dist"></div>
+    <div class="m-act">
+      <button class="share" id="b-share">Share result</button>
+      <button class="again" id="b-again">Play practice round</button>
+    </div>
+    <p class="next" id="next"></p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var W=[
+    ['MAPLE','Nature','Quebec alone produces roughly 70 percent of the world’s maple syrup.'],
+    ['MOOSE','Wildlife','Moose are the largest members of the deer family – a big bull can weigh more than 600 kg.'],
+    ['CANOE','Culture','Indigenous birchbark canoes carried goods across the country during the fur trade.'],
+    ['TOQUE','Slang','A toque is a knitted winter hat – you will also see it spelled “tuque”.'],
+    ['IGLOO','Culture','The word comes from the Inuktitut “iglu”, which simply means house.'],
+    ['HOSER','Slang','The word was made famous by Bob and Doug McKenzie on the comedy show SCTV.'],
+    ['PUCKS','Sports','Hockey pucks are frozen before NHL games so they bounce less on the ice.'],
+    ['YUKON','Places','The territory is named after the Yukon River – its name is often translated as “great river”.'],
+    ['BANFF','Places','Banff became Canada’s first national park in 1885.'],
+    ['BISON','Wildlife','The wood bison is the largest land mammal in North America.'],
+    ['SKATE','Sports','Ottawa’s Rideau Canal Skateway is one of the largest naturally frozen skating rinks in the world.'],
+    ['SYRUP','Food','Quebec keeps a strategic maple syrup reserve to keep supply and prices stable.'],
+    ['BACON','Food','“Peameal bacon” is lean back bacon rolled in cornmeal – a Toronto favourite.'],
+    ['GOOSE','Wildlife','Canada geese fly in a V formation, which helps the flock save energy.'],
+    ['OTTER','Wildlife','Sea otters off the B.C. coast often float together in groups called rafts.'],
+    ['CABIN','Culture','Depending on the province, a summer place in the woods is a cabin, a cottage or a camp.'],
+    ['PARKA','Culture','Inuit designed the warm hooded coats that inspired the modern parka.'],
+    ['KAYAK','Culture','Kayaks were invented by Inuit and other Arctic peoples for hunting on the water.'],
+    ['TOTEM','Culture','Totem poles are carved by First Nations of the Pacific Northwest Coast, such as the Haida.'],
+    ['METIS','Culture','The Métis are one of the three Indigenous peoples recognised in Canada’s Constitution.'],
+    ['CURDS','Food','Fresh cheese curds squeak against your teeth – the sign they are perfect for poutine.'],
+    ['GRAVY','Food','Poutine – fries, cheese curds and gravy – comes from rural Quebec in the 1950s.'],
+    ['TARTS','Food','Butter tarts are a classic Canadian pastry with a gooey sugar-and-butter filling.'],
+    ['DONUT','Food','Tim Hortons opened its first shop in Hamilton, Ontario, in 1964.'],
+    ['LEAFS','Sports','Toronto’s NHL team took the Maple Leafs name in 1927.'],
+    ['STICK','Sports','The first organised indoor hockey game was played in Montreal in 1875.'],
+    ['ICING','Sports','Icing is called when the puck is shot from behind centre ice past the opponents’ goal line untouched.'],
+    ['STONE','Sports','Many top curling stones are made from granite quarried on Ailsa Craig in Scotland.'],
+    ['BROOM','Sports','Curlers sweep in front of the stone to make it travel farther and curl less.'],
+    ['FROST','Nature','Snag, Yukon, recorded −63 °C in 1947 – the coldest temperature ever measured in North America.'],
+    ['NORTH','Places','The national anthem calls Canada “the True North strong and free”.'],
+    ['LAKES','Nature','Canada is often said to hold more lakes than the rest of the world combined.'],
+    ['FALLS','Places','The largest of the three Niagara Falls, the Horseshoe Falls, lies mostly on the Canadian side.'],
+    ['POLAR','Wildlife','Churchill, Manitoba, calls itself the Polar Bear Capital of the World.'],
+    ['TAIGA','Nature','Canada’s boreal forest is one of the largest intact forests left on Earth.'],
+    ['ORCAS','Wildlife','Orcas live in close family groups called pods along the B.C. coast.'],
+    ['SORRY','Slang','Ontario’s Apology Act of 2009 says that saying sorry is not an admission of legal fault.'],
+    ['LOONS','Wildlife','The one-dollar “loonie” coin, introduced in 1987, is named after the loon on its back.'],
+    ['RINKS','Sports','Many Canadian families flood their backyards every winter to build their own rinks.'],
+    ['SPIKE','History','The “Last Spike” of the Canadian Pacific Railway was driven at Craigellachie, B.C., in 1885.'],
+    ['CROWN','History','Canada is a constitutional monarchy with the monarch as head of state.'],
+    ['TIDES','Nature','The Bay of Fundy has the highest tides in the world – up to about 16 metres.'],
+    ['WHEAT','Food','The Prairie provinces make Canada one of the world’s largest wheat exporters.']
+  ];
+  var START=new Date(2026,0,1);
+  var KEYS=['QWERTYUIOP','ASDFGHJKL','>ZXCVBNM<'];
+  var mode='daily', ans, info, guesses=[], cur='', over=false, won=false, hintN=0, busy=false, dayIdx;
+
+  function store(k,v){ try{ if(v===undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k,JSON.stringify(v)); }catch(e){ return null; } }
+  function today(){ var n=new Date(); var d=new Date(n.getFullYear(),n.getMonth(),n.getDate()); return Math.round((d-START)/864e5); }
+  function toast(t,ms){ var e=$('toast'); e.textContent=t; e.classList.add('show'); clearTimeout(e._t); e._t=setTimeout(function(){e.classList.remove('show');},ms||1600); }
+
+  /* build board + keyboard */
+  var board=$('board');
+  for(var r=0;r<6;r++){ var row=document.createElement('div'); row.className='row'; for(var c=0;c<5;c++){ var t=document.createElement('div'); t.className='tile'; row.appendChild(t);} board.appendChild(row); }
+  KEYS.forEach(function(line){
+    var row=document.createElement('div'); row.className='kb-row';
+    line.split('').forEach(function(k){
+      var b=document.createElement('button'); b.type='button';
+      if(k==='>'){ b.textContent='Enter'; b.dataset.k='ENTER'; b.className='wide'; }
+      else if(k==='<'){ b.innerHTML='⌫'; b.dataset.k='BACK'; b.className='wide'; b.setAttribute('aria-label','Backspace'); }
+      else { b.textContent=k; b.dataset.k=k; }
+      row.appendChild(b);
+    });
+    $('kb').appendChild(row);
+  });
+
+  function score(g,a){
+    var res=Array(5).fill('a'), pool={};
+    for(var i=0;i<5;i++){ if(g[i]===a[i]) res[i]='c'; else pool[a[i]]=(pool[a[i]]||0)+1; }
+    for(i=0;i<5;i++){ if(res[i]!=='c' && pool[g[i]]){ res[i]='p'; pool[g[i]]--; } }
+    return res;
+  }
+  function paintRow(ri,word,res,animate,done){
+    var tiles=board.children[ri].children;
+    for(var i=0;i<5;i++){
+      (function(i){
+        var t=tiles[i]; t.textContent=word[i]||''; t.className='tile'+(word[i]?' filled':'');
+        if(!res) return;
+        if(animate){ setTimeout(function(){ t.classList.add('flip'); setTimeout(function(){ t.classList.add(res[i]); },250); },i*280); }
+        else t.classList.add(res[i]);
+      })(i);
+    }
+    if(animate && done) setTimeout(done,5*280+300);
+  }
+  function paintKeys(){
+    var st={};
+    guesses.forEach(function(g){ var r=score(g,ans); for(var i=0;i<5;i++){ var p=st[g[i]]; var v=r[i]; if(p==='c') continue; if(p==='p' && v==='a') continue; st[g[i]]=v; } });
+    $('kb').querySelectorAll('button').forEach(function(b){ var k=b.dataset.k; b.classList.remove('c','p','a'); if(st[k]) b.classList.add(st[k]); });
+  }
+  function drawAll(){
+    for(var r=0;r<6;r++){
+      if(r<guesses.length) paintRow(r,guesses[r],score(guesses[r],ans),false);
+      else if(r===guesses.length && !over) paintRow(r,cur,null);
+      else paintRow(r,'',null);
+    }
+    paintKeys(); drawHints();
+  }
+  function drawHints(){
+    var vowels=ans.split('').filter(function(x){return 'AEIOU'.indexOf(x)>-1;}).length;
+    var h=[['Topic',info[1]],['Vowels',vowels+(vowels===1?' vowel':' vowels')],['First letter',ans[0]]];
+    $('hints').innerHTML=hintN?h.slice(0,hintN).map(function(x){return '<span><em>'+x[0]+'</em>'+x[1]+'</span>';}).join(''):'';
+  }
+
+  function save(){ if(mode==='daily') store('ck-day-'+dayIdx,{g:guesses,o:over,w:won,h:hintN}); }
+  function stats(){ return store('ck-stats')||{p:0,w:0,s:0,b:0,d:[0,0,0,0,0,0],last:-9}; }
+  function record(win){
+    if(mode!=='daily') return;
+    var s=stats(); s.p++;
+    if(win){ s.w++; s.d[guesses.length-1]++; s.s=(s.last===dayIdx-1)?s.s+1:1; s.b=Math.max(s.b,s.s); s.last=dayIdx; }
+    else { s.s=0; }
+    store('ck-stats',s);
+  }
+
+  function load(m){
+    mode=m; cur=''; busy=false;
+    document.querySelectorAll('.mode button').forEach(function(b){b.classList.toggle('on',b.dataset.m===m);});
+    if(m==='daily'){
+      dayIdx=today(); info=W[((dayIdx%W.length)+W.length)%W.length]; ans=info[0];
+      $('pz-no').textContent='#'+(dayIdx+1);
+      var s=store('ck-day-'+dayIdx);
+      guesses=s?s.g:[]; over=s?s.o:false; won=s?s.w:false; hintN=s?s.h:0;
+    } else {
+      var prev=ans; do{ info=W[Math.floor(Math.random()*W.length)]; }while(info[0]===prev);
+      ans=info[0]; guesses=[]; over=false; won=false; hintN=0;
+    }
+    drawAll();
+    if(over && mode==='daily') setTimeout(function(){openModal(true);},300);
+  }
+
+  function submit(){
+    if(busy||over) return;
+    var row=board.children[guesses.length];
+    if(cur.length<5){ row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake'); toast('Not enough letters'); return; }
+    if(!/[AEIOUY]/.test(cur)){ row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake'); toast('Try a real word'); return; }
+    var g=cur; guesses.push(g); cur=''; busy=true;
+    var res=score(g,ans);
+    paintRow(guesses.length-1,g,res,true,function(){
+      busy=false; paintKeys();
+      if(g===ans){ over=true; won=true; record(true); save(); var msg=['Genius!','Magnificent!','Impressive!','Splendid!','Great!','Phew!'][guesses.length-1]; toast(msg); var tiles=board.children[guesses.length-1].children; for(var i=0;i<5;i++){(function(t,i){setTimeout(function(){t.classList.add('bounce');},i*90);})(tiles[i],i);} setTimeout(function(){openModal(true);},1400); }
+      else if(guesses.length===6){ over=true; won=false; record(false); save(); toast(ans,2400); setTimeout(function(){openModal(true);},1400); }
+      else save();
+    });
+  }
+  function press(k){
+    if(over||busy) return;
+    if(k==='ENTER') return submit();
+    if(k==='BACK'){ cur=cur.slice(0,-1); }
+    else if(/^[A-Z]$/.test(k) && cur.length<5){ cur+=k; var t=board.children[guesses.length].children[cur.length-1]; t.classList.remove('pop'); void t.offsetWidth; t.classList.add('pop'); }
+    paintRow(guesses.length,cur,null);
+  }
+  $('kb').addEventListener('click',function(e){ var b=e.target.closest('button'); if(b){ press(b.dataset.k); b.blur(); } });
+  document.addEventListener('keydown',function(e){
+    if(e.ctrlKey||e.metaKey||e.altKey) return;
+    if(!$('modal').hidden){ if(e.key==='Escape') closeModal(); return; }
+    var tag=(e.target.tagName||'').toLowerCase(); if(tag==='input'||tag==='textarea') return;
+    if(e.key==='Enter'){ e.preventDefault(); press('ENTER'); }
+    else if(e.key==='Backspace') press('BACK');
+    else if(/^[a-zA-Z]$/.test(e.key)) press(e.key.toUpperCase());
+  });
+
+  $('b-hint').addEventListener('click',function(){
+    if(hintN>=3){ toast('All hints used'); return; }
+    hintN++; drawHints(); save();
+  });
+  $('b-hc').addEventListener('click',function(){ document.body.classList.toggle('hc'); store('ck-hc',document.body.classList.contains('hc')); });
+  if(store('ck-hc')) document.body.classList.add('hc');
+  document.querySelectorAll('.mode button').forEach(function(b){ b.addEventListener('click',function(){ if(b.dataset.m==='practice' || mode!=='daily') load(b.dataset.m); }); });
+
+  /* modal */
+  var cd;
+  function openModal(showResult){
+    var s=stats();
+    $('m-result').style.display=showResult&&over?'':'none';
+    if(over){
+      $('m-k').textContent=won?['Genius!','Magnificent!','Impressive!','Splendid!','Great!','Phew!'][guesses.length-1]:'So close – the word was';
+      $('m-title').textContent=ans; $('m-cat').textContent=info[1]; $('m-fact').textContent=info[2];
+    }
+    $('st-p').textContent=s.p; $('st-w').textContent=s.p?Math.round(s.w/s.p*100):0; $('st-s').textContent=s.s; $('st-b').textContent=s.b;
+    var mx=Math.max.apply(null,s.d.concat([1]));
+    $('dist').innerHTML=s.d.map(function(n,i){ var hl=over&&won&&mode==='daily'&&guesses.length===i+1; return '<div><span>'+(i+1)+'</span><i><s class="'+(hl?'hl':'')+'" style="width:'+Math.max(8,n/mx*100)+'%">'+n+'</s></i></div>'; }).join('');
+    $('b-share').style.display=over?'':'none';
+    clearInterval(cd);
+    if(mode==='daily'){ var tick=function(){ var n=new Date(), m=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1), d=m-n; var h=Math.floor(d/36e5), mi=Math.floor(d%36e5/6e4), se=Math.floor(d%6e4/1e3); $('next').textContent='Next daily word in '+h+'h '+String(mi).padStart(2,'0')+'m '+String(se).padStart(2,'0')+'s'; }; tick(); cd=setInterval(tick,1000); }
+    else $('next').textContent='Practice rounds do not count towards your stats.';
+    $('modal').hidden=false;
+  }
+  function closeModal(){ $('modal').hidden=true; clearInterval(cd); }
+  $('m-x').addEventListener('click',closeModal);
+  $('modal').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
+  $('b-stats').addEventListener('click',function(){ openModal(over); });
+  $('b-again').addEventListener('click',function(){ closeModal(); load('practice'); });
+  $('b-share').addEventListener('click',function(){
+    var hc=document.body.classList.contains('hc'), em={c:hc?'🟧':'🟥',p:hc?'🟦':'🟨',a:'⬛'};
+    var grid=guesses.map(function(g){ return score(g,ans).map(function(x){return em[x];}).join(''); }).join('\n');
+    var t='Canuckle '+(mode==='daily'?'#'+(dayIdx+1):'Practice')+' '+(won?guesses.length:'X')+'/6'+(hintN?' ('+hintN+' hint'+(hintN>1?'s':'')+')':'')+'\n\n'+grid;
+    var done=function(){toast('Result copied to clipboard');};
+    if(navigator.clipboard&&window.isSecureContext){ navigator.clipboard.writeText(t).then(done,function(){}); return; }
+    var a=document.createElement('textarea'); a.value=t; document.body.appendChild(a); a.select(); try{document.execCommand('copy');done();}catch(e){} a.remove();
+  });
+
+  document.querySelectorAll('.nav a').forEach(function(a){a.addEventListener('click',function(){document.querySelector('.nav').classList.remove('open');});});
+  $('yr').textContent=new Date().getFullYear();
+  load('daily');
+})();
+</script>
+</body>
+</html>
